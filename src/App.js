@@ -142,6 +142,45 @@ server.post("/", async (req, res) => {
   }
 });
 
+server.get("/my-wallet", async (req, res) => {
+  const token = req.headers.authorization?.replace("Bearer ", "");
+
+  if (!token) {
+    res.status(401).send("Token não recebido");
+    return;
+  }
+
+  try {
+    const session = await db.collection("sessions").findOne({ token });
+
+    const user = await db
+      .collection("clients")
+      .findOne({ _id: session.userId });
+
+    delete user.password;
+
+    res.send(user.name);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+server.delete("/sessions", async (req, res) => {
+  const token = req.headers.authorization?.replace("Bearer ", "");
+
+  if (!token) {
+    res.status(401).send("Token não recebido");
+    return;
+  }
+
+  try {
+    const response = await db.collection("sessions").deleteOne({ token });
+    res.sendStatus(200);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
 server.listen(5000, () => {
   console.log("Listening on port 5000");
 });
