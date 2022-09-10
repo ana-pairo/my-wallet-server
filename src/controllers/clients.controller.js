@@ -1,24 +1,8 @@
-import { MongoClient, ObjectId } from "mongodb";
-import { v4 as uuid } from "uuid";
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import bcrypt from "bcrypt";
 import joi from "joi";
+import bcrypt from "bcrypt";
+import { stripHtml } from "string-strip-html";
+import db from "../database/db.js";
 
-dotenv.config();
-
-const server = express();
-server.use(cors());
-server.use(express.json());
-
-const mongoClient = new MongoClient(process.env.MONGO_URI);
-let db;
-mongoClient.connect().then(() => {
-  db = mongoClient.db("myWallet");
-});
-
-//SCHEMAS
 const usersSCHEMA = joi.object({
   name: joi
     .string()
@@ -35,20 +19,7 @@ const usersSCHEMA = joi.object({
     .regex(/[^A-Z a-z0-9]/),
 });
 
-const loginSCHEMA = joi.object({
-  email: joi.string().email().required(),
-  password: joi
-    .string()
-    .required()
-    .min(4)
-    .regex(/\d+/)
-    .regex(/[A-Z]/)
-    .regex(/[^A-Z a-z0-9]/),
-});
-
-// POST NEW USER
-
-server.post("/sign-up", async (req, res) => {
+async function createClient(req, res) {
   if (!req.body) {
     res.status(400).send("User não enviado");
     return;
@@ -95,6 +66,7 @@ server.post("/sign-up", async (req, res) => {
   try {
     const userInserted = await db.collection("clients").insertOne({
       ...user,
+      name: stripHtml(user.name).result,
       password: passwordHash,
     });
 
@@ -104,45 +76,9 @@ server.post("/sign-up", async (req, res) => {
   } catch (error) {
     res.status(500).send(error.message);
   }
-});
+}
 
-server.post("/", async (req, res) => {
-  if (!req.body) {
-    res.status(400).send("User não enviado");
-    return;
-  }
-
-  const login = req.body;
-
-  const loginValidation = loginSCHEMA.validate(login, { abortEarly: false });
-
-  if (loginValidation.error) {
-    res.status(422).send("E-mail ou senha inválida");
-    return;
-  }
-
-  const token = uuid();
-
-  try {
-    const user = await db.collection("clients").findOne({ email: login.email });
-
-    if (user && bcrypt.compareSync(login.password, user.password)) {
-      await db.collection("sessions").insertOne({
-        userId: user._id,
-        token,
-      });
-
-      res.status(201).send(token);
-    } else {
-      res.status(401).send("E-mail não cadastrado e/ou senha incorreta");
-      return;
-    }
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
-
-server.get("/my-wallet", async (req, res) => {
+async function getClientData(req, res) {
   const token = req.headers.authorization?.replace("Bearer ", "");
 
   if (!token) {
@@ -163,24 +99,6 @@ server.get("/my-wallet", async (req, res) => {
   } catch (error) {
     res.status(500).send(error);
   }
-});
+}
 
-server.delete("/sessions", async (req, res) => {
-  const token = req.headers.authorization?.replace("Bearer ", "");
-
-  if (!token) {
-    res.status(401).send("Token não recebido");
-    return;
-  }
-
-  try {
-    const response = await db.collection("sessions").deleteOne({ token });
-    res.sendStatus(200);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
-
-server.listen(5000, () => {
-  console.log("Listening on port 5000");
-});
+export { createClient, getClientData };
