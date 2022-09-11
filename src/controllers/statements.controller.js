@@ -34,7 +34,7 @@ async function insertNewTransaction(req, res) {
   });
 
   if (dataValidation.error) {
-    const errors = dataValidation.error.details.map((detail) => detail.messade);
+    const errors = dataValidation.error.details.map((detail) => detail.message);
     res.status(422).send(errors);
     return;
   }
