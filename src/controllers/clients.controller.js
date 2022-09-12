@@ -44,7 +44,6 @@ async function createClient(req, res) {
 
       return detail.message;
     });
-    console.log(validatingErrors);
     res.status(422).send(errors);
     return;
   }

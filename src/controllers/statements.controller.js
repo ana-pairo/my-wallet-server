@@ -31,7 +31,17 @@ async function insertNewTransaction(req, res) {
   });
 
   if (dataValidation.error) {
-    const errors = dataValidation.error.details.map((detail) => detail.message);
+    const errors = [];
+    const validatingErrors = dataValidation.error.details.map((detail) => {
+      if (
+        detail.message === '"amount" must be a number' ||
+        detail.message === '"amount" must be greater than or equal to 0.01'
+      ) {
+        errors.push("Por favor, insira valores superiores a R$ 0,00");
+      }
+      return detail.message;
+    });
+
     res.status(422).send(errors);
     return;
   }
