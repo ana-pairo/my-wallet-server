@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
 import {
   createClient,
   getClientData,
@@ -12,6 +13,9 @@ import {
   getClientStatments,
   insertNewTransaction,
 } from "./controllers/statements.controller.js";
+
+
+dotenv.config();
 
 const server = express();
 server.use(cors());
@@ -29,6 +33,6 @@ server.get("/wallet", getClientStatments);
 
 server.delete("/sessions", closeClientSession);
 
-server.listen(5000, () => {
-  console.log("Listening on port 5000");
+server.listen(process.env.PORT, () => {
+  console.log(`Listening to PORT ${process.env.PORT}`);
 });
