@@ -14,7 +14,6 @@ import {
   insertNewTransaction,
 } from "./controllers/statements.controller.js";
 
-
 dotenv.config();
 
 const server = express();
@@ -32,6 +31,10 @@ server.post("/wallet", insertNewTransaction);
 server.get("/wallet", getClientStatments);
 
 server.delete("/sessions", closeClientSession);
+
+server.get("/status", (req, res) => {
+  res.send("Server working");
+});
 
 server.listen(process.env.PORT, () => {
   console.log(`Listening to PORT ${process.env.PORT}`);

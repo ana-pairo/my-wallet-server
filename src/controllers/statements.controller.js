@@ -1,6 +1,6 @@
 import joi from "joi";
 import extension from "@joi/date";
-import db from "../database/db.js";
+import db from "../config/database.js";
 
 const Joi = joi.extend(extension);
 
