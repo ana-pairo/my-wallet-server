@@ -4,7 +4,7 @@ import { notFoundError } from "../../errors/index.js";
 import bcrypt from "bcrypt";
 import { sessionsRepository } from "../../repositories/sessions.repository.js";
 
-export async function createNewSession({ loginData }) {
+async function createNewSession({ loginData }) {
     const token = uuid();
 
     const user = await usersRepository.selectUserByEmail({
@@ -27,7 +27,7 @@ export async function createNewSession({ loginData }) {
     throw notFoundError();
 }
 
-export async function deleteSessionRegister({ token }) {
+async function deleteSessionRegister({ token }) {
     return sessionsRepository.deleteSession({ token });
 }
 
