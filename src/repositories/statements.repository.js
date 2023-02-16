@@ -8,9 +8,9 @@ async function insertNewTransaction({ data }) {
 
 async function selectTransactionsByUserId({ userId }) {
   return db
-    .collection("transaction")
+    .collection("transactions")
     .find({
-      clientId: userId,
+      userId: userId,
     })
     .toArray();
 }

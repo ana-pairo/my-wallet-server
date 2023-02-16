@@ -8,9 +8,8 @@ async function insertNewSession({ data }) {
   const response = await db.collection("sessions").insertOne({
     ...data,
   });
-  console.log("resposta do banco", response)
 
-  return response
+  return response;
 }
 
 async function deleteSession({ token }) {
