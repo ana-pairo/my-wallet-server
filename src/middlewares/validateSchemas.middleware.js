@@ -58,7 +58,7 @@ export function validateNewTransactionBody(req, res, next) {
 
   if (bodyValidation.error) {
     const errors = [];
-    dataValidation.error.details.map((detail) => {
+    bodyValidation.error.details.map((detail) => {
       if (
         detail.message === '"amount" must be a number' ||
         detail.message === '"amount" must be greater than or equal to 0.01'
