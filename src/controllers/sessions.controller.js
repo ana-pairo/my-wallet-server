@@ -1,7 +1,7 @@
 import { v4 as uuid } from "uuid";
 import bcrypt from "bcrypt";
 import joi from "joi";
-import db from "../database/db.js";
+import db from "../config/database.js";
 
 const loginSCHEMA = joi.object({
   email: joi.string().email().required(),

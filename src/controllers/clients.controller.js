@@ -1,7 +1,7 @@
 import joi from "joi";
 import bcrypt from "bcrypt";
 import { stripHtml } from "string-strip-html";
-import db from "../database/db.js";
+import db from "../config/database.js";
 
 const usersSCHEMA = joi.object({
   name: joi
