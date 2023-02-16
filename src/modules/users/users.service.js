@@ -8,10 +8,7 @@ async function createNewUser({ newUser }) {
     email: newUser.email,
   });
 
-  console.log(isUserRepited)
-
-  if (isUserRepited._id) throw duplicatedEmailError;
-  console.log("passou")
+  if (isUserRepited) throw duplicatedEmailError();
 
   const passwordHash = bcrypt.hashSync(newUser.password, 10);
 
@@ -19,12 +16,11 @@ async function createNewUser({ newUser }) {
     ...newUser,
     name: stripHtml(newUser.name).result,
     password: passwordHash,
-  };
+  }
 
   const response = await usersRepository.insertNewUser(cleanData);
-  console.log(reponse)
 
-  return response._id;
+  return response.insertedId;
 }
 
 async function getUserData({ userId }) {

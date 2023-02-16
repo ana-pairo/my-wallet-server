@@ -5,9 +5,12 @@ async function selectSessionByToken({ token }) {
 }
 
 async function insertNewSession({ data }) {
-  return db.collection("sessions").insertOne({
+  const response = await db.collection("sessions").insertOne({
     ...data,
   });
+  console.log("resposta do banco", response)
+
+  return response
 }
 
 async function deleteSession({ token }) {

@@ -20,13 +20,11 @@ export function validateLoginBody(req, res, next) {
 }
 
 export function validateNewUserBody(req, res, next) {
-  console.log("cheguei no body validation com corpo", req.body);
   const body = req.body;
 
   const bodyValidation = usersSCHEMA.validate(body, { abortEarly: false });
 
   if (bodyValidation.error) {
-    console.log("entrei no if de erro do validation", bodyValidation.error)
     const errors = [];
     bodyValidation.error.details.map((detail) => {
       if (detail.message === '"email" must be a valid email') {
@@ -47,11 +45,8 @@ export function validateNewUserBody(req, res, next) {
       .send(invalidDataError(errors));
   }
 
-  console.log("final do validation e setando res.locals.newUser")
 
   res.locals.newUser = req.body;
-
-  console.log("locals", res.locals.newUser)
 
   next();
 }
