@@ -1,4 +1,4 @@
-# my-wallet-server
+<h1 align="center">My Wallet Server</h1>
 
 Welcome to my-wallet-server! This is the back-end repository of a web app that helps users to control their expenses and earnings. The API allows users to input their financial transactions and get an overview of their finances.
 
